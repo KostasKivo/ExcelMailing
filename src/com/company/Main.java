@@ -5,6 +5,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xwpf.usermodel.*;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,53 +15,42 @@ import javax.swing.*;
 import java.util.List;
 import java.io.File;
 
-/**
-
- *  4)Kanw mia loopa se kathena apo ta paidia
- *  5)Ftiaxnw to proof of payment mesw Word
- *  Isws h sunarthsh pou ftiaxnei ta Word na pairnei ton arithmo ths loopas wste na ftiaxnetai to ReceiptNumero
- *  6)Sthn loopa stelnw to proof of payment me diaforetika stoixeia kathe fora mesw email
+/*
+    TODO: fix openExcelFile
  */
 
 
 public class Main {
 
-    private static JFileChooser excelFilePath;
-    private static JFileChooser wordFilePath;
+    protected static JFileChooser excelFilePath;
+    protected static JFileChooser wordFilePath;
+    protected static JFileChooser proofOfPaymentFolder;
     private static ArrayList<ErasmusStudents> students = new ArrayList<>();
     //Always numberOfStudents-1 because of first row with the info
     private static int numberOfStudents = 0;
 
     private static int posSurname, posName, posEmail, posTel;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
 
-        openExcelFile();
-        getWordFilePath();
-        createWordFiles();
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
+       SwingUtilities.invokeLater(new Runnable() {
+           @Override
+           public void run() {
+               MyForm f1 = new MyForm();
+               f1.setVisible(true);
+           }
+       });
     }
 
-    private static void getExcelFilePath() {
 
-        String userDir = System.getProperty("user.home");
-        excelFilePath = new JFileChooser(userDir + "/Desktop");
-        excelFilePath.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        excelFilePath.showDialog(null, "Select the Excel file");
-    }
 
-    private static void getWordFilePath() {
-        String userDir = System.getProperty("user.home");
-        wordFilePath = new JFileChooser(userDir + "/Desktop");
-        wordFilePath.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        wordFilePath.showDialog(null, "Select the Word file");
-    }
-
-    private static void openExcelFile() {
+    protected static void openExcelFile() {
 
         try {
 
-            getExcelFilePath();
+            //getExcelFilePath();
 
             getInfoColumns();
 
@@ -96,12 +86,6 @@ public class Main {
 
 
     private static void createWordFiles() {
-
-        JFileChooser proofOfPaymentFolder;
-        String userDir = System.getProperty("user.home");
-        proofOfPaymentFolder = new JFileChooser(userDir + "/Desktop");
-        proofOfPaymentFolder.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        proofOfPaymentFolder.showDialog(null, "Select a Directory to create the files");
 
         try {
             for(int i=0;i<numberOfStudents-1;i++){

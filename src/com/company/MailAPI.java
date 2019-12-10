@@ -1,5 +1,6 @@
 package com.company;
 import com.company.Main;
+import com.company.MyForm;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -15,8 +16,8 @@ public class MailAPI {
 
     public static void sendMail(ErasmusStudents s,String proofOfPaymentPath) {
 
-        final String username="username";
-        final String password="password";
+        final String username = "" ;
+        final String password = "password";
 
         Properties properties=new Properties();
         properties.put("mail.smtp.auth","true");
