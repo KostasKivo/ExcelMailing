@@ -25,7 +25,7 @@ public class Main {
     protected static JFileChooser excelFilePath;
     protected static JFileChooser wordFilePath;
     protected static JFileChooser proofOfPaymentFolder;
-    private static ArrayList<ErasmusStudents> students = new ArrayList<>();
+    protected static ArrayList<ErasmusStudents> students = new ArrayList<>();
     //Always numberOfStudents-1 because of first row with the info
     private static int numberOfStudents = 0;
 
@@ -35,13 +35,11 @@ public class Main {
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-       SwingUtilities.invokeLater(new Runnable() {
-           @Override
-           public void run() {
-               MyForm f1 = new MyForm();
-               f1.setVisible(true);
-           }
+       SwingUtilities.invokeLater(() -> {
+           MyForm f1 = new MyForm();
+           f1.setVisible(true);
        });
+
     }
 
 
@@ -54,6 +52,11 @@ public class Main {
 
             getInfoColumns();
 
+            System.out.println(posSurname);
+            System.out.println(posName);
+            System.out.println(posEmail);
+            System.out.println(posTel);
+
             Workbook workbook = WorkbookFactory.create(new File(excelFilePath.getSelectedFile().getPath()));
             Sheet sheet = workbook.getSheetAt(0);
 
@@ -65,11 +68,12 @@ public class Main {
                 numberOfStudents++;
             }
 
+            System.out.println(numberOfStudents);
+
             Row row;
             for (int i = 1; i < numberOfStudents; i++) {
 
                 row = sheet.getRow(i);
-
 
                 students.add(new ErasmusStudents(
                         row.getCell(posName).toString(),
@@ -85,7 +89,7 @@ public class Main {
     }
 
 
-    private static void createWordFiles() {
+    protected static void createWordFiles() {
 
         try {
             for(int i=0;i<numberOfStudents-1;i++){
@@ -155,7 +159,7 @@ public class Main {
 
                 doc.write(new FileOutputStream(proofOfPaymentFolder.getSelectedFile().getAbsolutePath() +"/"+ students.get(i).getName() +".docx"));
 
-                MailAPI.sendMail(students.get(i), proofOfPaymentFolder.getSelectedFile().getAbsolutePath() +"/"+ students.get(i).getName() +".docx" );
+                //MailAPI.sendMail(students.get(i), proofOfPaymentFolder.getSelectedFile().getAbsolutePath() +"/"+ students.get(i).getName() +".docx" );
 
                doc.close();
 
@@ -206,7 +210,7 @@ public class Main {
                     posSurname = i;
                 } else if (splited.get(i).toLowerCase().contains("name")) {
                     posName = i;
-                } else if (splited.get(i).toLowerCase().contains("phone")) {
+                } else if (splited.get(i).toLowerCase().contains("phone") || splited.get(i).toLowerCase().contains("tel")) {
                     posTel = i;
                 } else if (splited.get(i).toLowerCase().contains("mail")) {
                     posEmail = i;
