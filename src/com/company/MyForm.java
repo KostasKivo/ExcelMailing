@@ -5,10 +5,10 @@ import java.awt.*;
 
 public class MyForm extends JFrame {
     private JPanel rootPanel;
-    protected JTextField usernameTextField;
-    protected JTextField passwordTextField;
-    protected JTextField purposeTextField;
-    protected JTextField priceTextField;
+    private JTextField usernameTextField;
+    private JTextField passwordTextField;
+    public JTextField purposeTextField;
+    private JTextField priceTextField;
     private JTextField wordFileTextField;
     private JButton wordFindButton;
     private JTextField excelFileTextField;
@@ -17,7 +17,24 @@ public class MyForm extends JFrame {
     private JButton outputFolderFindButton;
     private JTextField outputFolderTextField;
 
-    protected MyForm() {
+
+    private String getUsernameTextField() {
+        return usernameTextField.getText();
+    }
+
+    private String getPasswordTextField() {
+        return passwordTextField.getText();
+    }
+
+    String getPurposeTextField() {
+        return purposeTextField.getText();
+    }
+
+    String getPriceTextField() {
+        return priceTextField.getText();
+    }
+
+    MyForm() {
         add(rootPanel);
 
 
@@ -70,19 +87,23 @@ public class MyForm extends JFrame {
             startSendingInvoicesButton.setSelected(false);
 
             //Change the not for bug testing
-            if((outputFolderTextField.getText().isEmpty() || excelFileTextField.getText().isEmpty()
+            if(!(outputFolderTextField.getText().isEmpty() || excelFileTextField.getText().isEmpty()
                 || wordFileTextField.getText().isEmpty() || passwordTextField.getText().isEmpty()
                 || usernameTextField.getText().isEmpty() || priceTextField.getText().isEmpty()
                 || purposeTextField.getText().isEmpty())) {
 
-                // TODO: openExcel works fine
-                //       wordDocument
+
+                Main.emailUsername = getUsernameTextField();
+                Main.emailPassword = getPasswordTextField();
+
                 Main.openExcelFile();
                 Main.createWordFiles();
 
+                JOptionPane.showMessageDialog(null, "Invoices sent successfully");
+                System.exit(1);
 
             } else {
-                //JOptionPane.showMessageDialog(null, "You have left something empty");
+                JOptionPane.showMessageDialog(null, "You have left something empty");
             }
 
         });

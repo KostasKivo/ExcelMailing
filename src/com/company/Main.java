@@ -1,6 +1,5 @@
 package com.company;
 
-import com.company.MailAPI;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.*;
@@ -15,17 +14,18 @@ import javax.swing.*;
 import java.util.List;
 import java.io.File;
 
-/*
-    TODO: fix openExcelFile
- */
 
 
 public class Main {
 
-    protected static JFileChooser excelFilePath;
-    protected static JFileChooser wordFilePath;
-    protected static JFileChooser proofOfPaymentFolder;
-    protected static ArrayList<ErasmusStudents> students = new ArrayList<>();
+    static String emailUsername;
+    static String emailPassword;
+
+    private static MyForm f1;
+    static JFileChooser excelFilePath;
+    static JFileChooser wordFilePath;
+    static JFileChooser proofOfPaymentFolder;
+    private static ArrayList<ErasmusStudents> students = new ArrayList<>();
     //Always numberOfStudents-1 because of first row with the info
     private static int numberOfStudents = 0;
 
@@ -36,26 +36,18 @@ public class Main {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
        SwingUtilities.invokeLater(() -> {
-           MyForm f1 = new MyForm();
+           f1 = new MyForm();
            f1.setVisible(true);
        });
 
     }
 
 
-
-    protected static void openExcelFile() {
+    static void openExcelFile() {
 
         try {
 
-            //getExcelFilePath();
-
             getInfoColumns();
-
-            System.out.println(posSurname);
-            System.out.println(posName);
-            System.out.println(posEmail);
-            System.out.println(posTel);
 
             Workbook workbook = WorkbookFactory.create(new File(excelFilePath.getSelectedFile().getPath()));
             Sheet sheet = workbook.getSheetAt(0);
@@ -67,8 +59,6 @@ public class Main {
                 }
                 numberOfStudents++;
             }
-
-            System.out.println(numberOfStudents);
 
             Row row;
             for (int i = 1; i < numberOfStudents; i++) {
@@ -83,13 +73,15 @@ public class Main {
                 ));
             }
 
+            workbook.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 
-    protected static void createWordFiles() {
+    static void createWordFiles() {
 
         try {
             for(int i=0;i<numberOfStudents-1;i++){
@@ -115,6 +107,7 @@ public class Main {
                 }
 
 
+
                 //counter to find what to write where
                 int j = 0;
 
@@ -122,21 +115,21 @@ public class Main {
                     for (XWPFTableRow row : tbl.getRows()) {
                         for (XWPFTableCell cell : row.getTableCells()) {
                             if (j == 3) {  //Name of Erasmus student
-                                cell.setText(students.get(i).getName());
+                                cell.setText(students.get(i).getName() + students.get(i).getSurname());
                             } else if (j == 5) { //Telephone of Student
-                                cell.setText(students.get(i).getSurname());
+                                cell.setText(students.get(i).getTelephoneNumber());
                             } else if (j == 7) { //Email of student
                                 cell.setText(students.get(i).getEmail());
                             } else if (j == 16) {//Purpose of Payment
-                                cell.setText("");
+                                cell.setText(f1.getPurposeTextField());
                             } else if (j == 17) {//Quantity
                                 cell.setText("1");
                             } else if (j == 18) {//Price
-                                cell.setText("");
-                            } else if (j == 19) {//Amount of euros
+                                cell.setText(f1.getPriceTextField());
+                            } else if (j == 19) {//Currency
                                 cell.setText("");
                             } else if (j == 29) {//Amount of euros
-                                cell.setText("");
+                                cell.setText(f1.getPriceTextField() + " euros");
                             } else if (j == 31) {//Total amount of euros
                                 cell.setText("");
                             } else if (j == 33) {//Amount received
@@ -159,7 +152,7 @@ public class Main {
 
                 doc.write(new FileOutputStream(proofOfPaymentFolder.getSelectedFile().getAbsolutePath() +"/"+ students.get(i).getName() +".docx"));
 
-                //MailAPI.sendMail(students.get(i), proofOfPaymentFolder.getSelectedFile().getAbsolutePath() +"/"+ students.get(i).getName() +".docx" );
+                MailAPI.sendMail(students.get(i), proofOfPaymentFolder.getSelectedFile().getAbsolutePath() +"/"+ students.get(i).getName() +".docx" );
 
                doc.close();
 

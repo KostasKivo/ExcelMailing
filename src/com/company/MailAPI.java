@@ -1,23 +1,22 @@
 package com.company;
-import com.company.Main;
-import com.company.MyForm;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.swing.*;
 import java.io.IOException;
 import java.util.Properties;
 
 
-public class MailAPI {
+class MailAPI {
 
 
-    public static void sendMail(ErasmusStudents s,String proofOfPaymentPath) {
+    static void sendMail(ErasmusStudents s, String proofOfPaymentPath) {
 
-        final String username = "" ;
-        final String password = "password";
+        final String username = Main.emailUsername ;
+        final String password = Main.emailPassword;
 
         Properties properties=new Properties();
         properties.put("mail.smtp.auth","true");
@@ -53,6 +52,8 @@ public class MailAPI {
             System.out.println("Mail sended");
         } catch (MessagingException | IOException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Something went wrong while sending the emails");
+            System.exit(0);
         }
     }
 }
